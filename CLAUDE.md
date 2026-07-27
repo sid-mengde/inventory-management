@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 Factory Inventory Management System Demo with GitHub integration - Full-stack application with Vue 3 frontend, Python FastAPI backend, and in-memory mock data (no database).
 
 > ⚠️ **This repository and any fork you create are PUBLIC.** Do not commit credentials, internal hostnames, or private registry URLs. `client/.npmrc` pins the public npm registry and `client/package-lock.json` is gitignored to prevent locally-configured registries from leaking into commits — leave both in place.
@@ -42,11 +44,31 @@ cd client
 npm install && npm run dev
 ```
 
+Frontend build: `cd client && npm run build` (output: `client/dist/`). There is no lint/typecheck script configured in `client/package.json`.
+
+## Testing
+
+Backend tests live in `tests/backend/` (pytest + FastAPI `TestClient`), run from the `tests/` directory — not from `server/`:
+
+```bash
+cd tests
+uv run pytest -v                                          # all tests
+uv run pytest backend/test_inventory.py -v                # one file
+uv run pytest backend/test_inventory.py::TestInventoryEndpoints::test_get_all_inventory -v  # one test
+```
+
+`tests/backend/conftest.py` adds `server/` to `sys.path` and imports `app` directly from `main.py` — no HTTP server needs to be running to test. There are no frontend tests configured. Use the **backend-api-test** skill when writing/modifying anything in `tests/backend/`.
+
+## Code Conventions
+- Always document non-obvious logic changes with comments (the *why*, not the *what*).
+
 ## Key Patterns
 
 **Filter System**: 4 filters (Time Period, Warehouse, Category, Order Status) apply to all data via query params
 **Data Flow**: Vue filters → `client/src/api.js` → FastAPI → In-memory filtering → Pydantic validation → Computed properties
 **Reactivity**: Raw data in refs (`allOrders`, `inventoryItems`), derived data in computed properties
+**i18n**: `useI18n` composable + `client/src/locales/{en,ja}.js` drive translated strings; `useAuth`'s mock user also switches name/title/tasks by locale
+**Auth**: `useAuth` is fully mocked (`isAuthenticated` hardcoded `true`, no real login) — do not treat it as a real auth boundary
 
 ## API Endpoints
 - `GET /api/inventory` - Filters: warehouse, category
@@ -61,6 +83,8 @@ npm install && npm run dev
 3. Update Pydantic models when changing JSON data structure
 4. Inventory filters don't support month (no time dimension)
 5. Revenue goals: $800K/month single, $9.6M YTD all months
+6. `client/src/views/Backlog.vue` is not registered in `main.js`'s router and has no nav link — backlog is actually rendered inline inside `Dashboard.vue` (table + `BacklogDetailModal`). Don't assume the `/backlog` route works; check `Dashboard.vue` first for backlog-related changes.
+7. `client/src/api.js` calls `/api/tasks` and `/api/purchase-orders` (create/get) endpoints that don't exist in `server/main.py` — those calls will 404 until the corresponding routes are added.
 
 ## File Locations
 - Views: `client/src/views/*.vue`
@@ -74,3 +98,6 @@ npm install && npm run dev
 - Status: green/blue/yellow/red
 - Charts: Custom SVG, CSS Grid for layouts
 - No emojis in UI
+
+## Nested CLAUDE.md files
+`client/CLAUDE.md` and `server/CLAUDE.md` hold detailed Vue/FastAPI conventions (component patterns, filtering/error-handling idioms, module-growth layout, etc.) and are auto-loaded when working in those directories — don't duplicate their content here.

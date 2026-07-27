@@ -4,6 +4,7 @@ export default {
     overview: '概要',
     inventory: '在庫',
     orders: '注文',
+    restocking: '在庫補充',
     finance: '財務',
     demandForecast: '需要予測',
     companyName: '触媒コンポーネンツ',
@@ -106,12 +107,15 @@ export default {
     title: '注文',
     description: '顧客注文の表示と管理',
     allOrders: 'すべての注文',
+    submittedOrders: '送信済み補充発注',
+    noRestockOrders: 'まだ補充発注はありません',
     totalOrders: '総注文数',
     totalRevenue: '総収益',
     avgOrderValue: '平均注文額',
     onTimeDelivery: '定時配達',
     itemsCount: '{count}件',
     quantity: '数量',
+    leadTimeDays: '{count}日',
     table: {
       orderNumber: '注文番号',
       orderId: '注文ID',
@@ -125,7 +129,8 @@ export default {
       totalValue: '合計金額',
       status: 'ステータス',
       expectedDelivery: '予定配達日',
-      actualDelivery: '実際の配達日'
+      actualDelivery: '実際の配達日',
+      leadTime: '納期'
     }
   },
 
@@ -185,6 +190,36 @@ export default {
       change: '変化',
       trend: 'トレンド',
       period: '期間'
+    }
+  },
+
+  // Restocking
+  restocking: {
+    title: '在庫補充',
+    description: '在庫不足の品目を確認し、予算内で補充発注を行います',
+    budgetLabel: '予算',
+    selectedItems: '選択済み品目数',
+    selectedCost: '選択済みコスト',
+    remainingBudget: '残り予算',
+    recommendationsTitle: '補充発注の推奨品目',
+    placeOrder: '発注する',
+    overBudget: '予算を{amount}超過しています',
+    successMessage: '注文{orderNumber}を発注しました - {leadTime}日後に到着予定です',
+    errorMessage: '補充発注の送信に失敗しました',
+    noData: '現在の需要予測に一致する在庫品目がありません',
+    table: {
+      include: '選択',
+      sku: 'SKU',
+      itemName: '品目名',
+      category: 'カテゴリ',
+      warehouse: '倉庫',
+      currentStock: '現在庫数',
+      reorderPoint: '再注文点',
+      trend: 'トレンド',
+      forecastedDemand: '予測需要',
+      unitCost: '単価',
+      quantity: '数量',
+      lineTotal: '小計'
     }
   },
 
